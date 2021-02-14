@@ -1,0 +1,56 @@
+StudentNo = 5;
+ProjectNo = 10;
+ChoiceNo = 10;
+
+% Random project choices assigned to each student
+for i = 1:ProjectNo
+    TempChoices = linspace(1,ChoiceNo,ChoiceNo);
+    while length(TempChoices) < ProjectNo
+        TempChoices(end+1) = 0;
+    end
+    TempChoices = TempChoices(randperm(length(TempChoices)));
+    Choices = TempChoices;
+end
+
+for i = 1:StudentNo-1
+TempChoices = linspace(1,ChoiceNo,ChoiceNo);
+    while length(TempChoices) < ProjectNo
+        TempChoices(end+1) = 0;
+    end
+    TempChoices = TempChoices(randperm(length(TempChoices)));
+    Choices = [Choices; TempChoices];
+end
+disp(Choices)
+
+
+
+% Allocate projects from preferences
+i=1;
+rank = 1;
+Allocations = [];
+it = 1;
+while length(Allocations) < StudentNo && i < StudentNo +1 && it < 10000
+    % select row i
+    row = Choices(i, 1:ProjectNo);
+    % Check if highest ranked project has been allocated already 
+    while ismember(find(row==rank), Allocations)
+%        if ismember(find(row==rank), Allocations)
+            % If allocated, clear allocations back to first double allocation redo with rank ++
+            i = find(Allocations==find(row==rank));
+            row = Choices(i, 1:ProjectNo);
+    %        disp(find(row==rank));
+    %        disp(Allocations);
+    %        disp("Allocated");
+            rank = rank + 1;
+            Allocations = [Allocations(1:i-1)];
+        %else 
+         %   rank = 1;
+    end
+    rank = 1;
+%    end
+    Allocations(end+1) = find(row==rank);
+    i = i + 1;
+    it = it + 1;
+end   
+disp(Allocations)
+
