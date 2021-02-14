@@ -1,0 +1,98 @@
+Brute Force Method
+Simple case with 2 students (StudentNo), 4 available projects (ProjectNo), and 3 preference choices (Choices)
+
+%4 projects
+%2 people
+
+Choices = [3 0 2 1; 1 3 2 0]
+ProjectNo = 4;
+StudentNo = 2;
+
+%Create matrix with all combinations of allocations 
+TempAllocations = [];
+Allocations = [0 0];
+for i = 1:ProjectNo
+    TempAllocations = [i];
+    for j = 1:ProjectNo
+        if ~ismember(j,TempAllocations)
+            TempAllocations = [i];
+            TempAllocations(end+1) = j;
+            if length(TempAllocations) == StudentNo
+                Allocations = [Allocations; TempAllocations];
+            end
+        end   
+    end
+end
+Allocations(1,:) = []
+
+%Iterates through each combniation of project allocations, 
+Happiness = 0;
+for i = 1:length(Allocations)
+    IndAllocations = Allocations(i,:);
+    TempHappiness = 0;
+    for ii = 1:length(IndAllocations)
+        row = Choices(ii, 1:ProjectNo);
+        if row(IndAllocations(ii)) == 0
+            TempHappiness = TempHappiness + 0;
+        else
+            TempHappiness = TempHappiness + ChoiceNo - row(IndAllocations(ii));
+        end
+    end
+    if TempHappiness > Happiness
+        Happiness = TempHappiness;
+        HappiestChoices = IndAllocations;
+    end
+end
+
+HappiestChoices
+Happiness
+
+For this example, it's clear from the initial preference selection that student 1 should be allocated project 4 and student 2 should be allocated project 1 as these are non conflicting top choices.
+
+Choices = [3 0 2 1; 0 2 3 1];
+Choices = [0 2 3 1; 3 0 2 1]
+
+ProjectNo = 4;
+StudentNo = 2;
+
+%Create matrix with all combinations of allocations 
+TempAllocations = [];
+Allocations = [0 0];
+for i = 1:ProjectNo
+    TempAllocations = [i];
+    for j = 1:ProjectNo
+        if ~ismember(j,TempAllocations)
+            TempAllocations = [i];
+            TempAllocations(end+1) = j;
+            if length(TempAllocations) == StudentNo
+                Allocations = [Allocations; TempAllocations];
+            end
+        end   
+    end
+end
+Allocations(1,:) = []
+
+%Iterates through each combniation of project allocations, 
+Happiness = 0;
+for i = 1:length(Allocations)
+    IndAllocations = Allocations(i,:);
+    TempHappiness = 0;
+    for ii = 1:length(IndAllocations)
+        row = Choices(ii, 1:ProjectNo);
+        if row(IndAllocations(ii)) == 0
+            TempHappiness = TempHappiness + 0;
+        else
+            TempHappiness = TempHappiness + ChoiceNo - row(IndAllocations(ii));
+        end
+    end
+    if TempHappiness > Happiness
+        Happiness = TempHappiness;
+        HappiestChoices = IndAllocations;
+    end
+end
+
+HappiestChoices
+Happiness
+In a similarly way to the current method, in this case the students further down the list have a greater preference on conflicting top choices. This is shown by switching the order of the preference list resulting in student 2 being allocated their top choice in both instances.
+
+This method is limited due to the number if students and projects. This algorithm requires a for loop for every student so nested for loops for 50+ students is not practical to implement. Also this would mean the time to compute will end up being too long as the number of iterations is a factorial function. 
